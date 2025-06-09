@@ -58,12 +58,12 @@ class Datum {
   String? pin;
   String? description;
   dynamic instagramPostLink;
-  Status? status;
+  String? status;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? totalLikes;
   int? totalComments;
-  int? alreadyLiked;
+  bool? alreadyLiked;
   int? isLoginUser;
   User? user;
 
@@ -97,12 +97,12 @@ class Datum {
     pin: json["pin"],
     description: json["description"],
     instagramPostLink: json["instagram_post_link"],
-    status: statusValues.map[json["status"]]!,
+    status: json["status"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
     totalLikes: json["total_likes"],
     totalComments: json["total_comments"],
-    alreadyLiked: json["already_liked"],
+    alreadyLiked: (json["already_liked"] ==1),
     isLoginUser: json["is_login_user"],
     user: json["user"] == null ? null : User.fromJson(json["user"]),
   );
@@ -117,7 +117,7 @@ class Datum {
     "pin": pin,
     "description": description,
     "instagram_post_link": instagramPostLink,
-    "status": statusValues.reverse[status],
+    "status": status,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
     "total_likes": totalLikes,
@@ -160,20 +160,12 @@ class Media {
   };
 }
 
-enum Status {
-  ACTIVE
-}
-
-final statusValues = EnumValues({
-  "active": Status.ACTIVE
-});
-
 class User {
   int? id;
   String? firstName;
   String? lastName;
   String? brandName;
-  UserType? userType;
+  String? userType;
   String? kyc;
   UserProfile? userProfile;
 
@@ -192,7 +184,7 @@ class User {
     firstName: json["first_name"],
     lastName: json["last_name"],
     brandName: json["brand_name"],
-    userType: userTypeValues.map[json["user_type"]]!,
+    userType: json["user_type"],
     kyc: json["kyc"],
     userProfile: json["user_profile"] == null ? null : UserProfile.fromJson(json["user_profile"]),
   );
@@ -202,7 +194,7 @@ class User {
     "first_name": firstName,
     "last_name": lastName,
     "brand_name": brandName,
-    "user_type": userTypeValues.reverse[userType],
+    "user_type": userType,
     "kyc": kyc,
     "user_profile": userProfile?.toJson(),
   };
@@ -228,16 +220,6 @@ class UserProfile {
   };
 }
 
-enum UserType {
-  BRAND,
-  CREATOR
-}
-
-final userTypeValues = EnumValues({
-  "brand": UserType.BRAND,
-  "creator": UserType.CREATOR
-});
-
 class Vertical {
   int? id;
   String? verticalName;
@@ -260,16 +242,4 @@ class Vertical {
     "vertical_name": verticalName,
     "image": image,
   };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }
