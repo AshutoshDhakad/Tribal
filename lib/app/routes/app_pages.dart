@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
-import 'package:tribal/app/modules/createProfile/views/create_profile_view.dart';
 
 import '../modules/BottomNavigationBar/bindings/bottom_navigation_bar_binding.dart';
 import '../modules/BottomNavigationBar/views/bottom_navigation_bar_view.dart';
 import '../modules/brandprofile/bindings/brandprofile_binding.dart';
 import '../modules/brandprofile/views/brandprofile_view.dart';
 import '../modules/createProfile/bindings/create_profile_binding.dart';
+import '../modules/createProfile/views/create_profile_view.dart';
+import '../modules/editProfile/bindings/edit_profile_binding.dart';
+import '../modules/editProfile/views/edit_profile_view.dart';
 import '../modules/explorePage/bindings/explore_page_binding.dart';
 import '../modules/explorePage/views/explore_page_view.dart';
 import '../modules/homePage1/bindings/home_page1_binding.dart';
@@ -74,8 +76,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.BRANDPROFILE,
-      page: () =>  BrandprofileView(),
+      page: () => BrandprofileView(),
       binding: BrandprofileBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDIT_PROFILE,
+      page: () => EditProfileView(),
+      binding: EditProfileBinding(),
     ),
   ];
 }

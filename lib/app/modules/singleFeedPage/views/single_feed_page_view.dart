@@ -174,7 +174,7 @@ class SingleFeedPageView extends GetView<SingleFeedPageController> {
                               ClipOval(
                                 child: CachedNetworkImage(
                                   imageUrl:
-                                      item?.user?.userProfile?.profileImage ??
+                                      item.user?.userProfile?.profileImage ??
                                           '',
                                   width: 40,
                                   height: 40,
@@ -199,7 +199,7 @@ class SingleFeedPageView extends GetView<SingleFeedPageController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      '${postInfo?.user?.firstName ?? ''} ${postInfo?.user?.lastName ?? ''}',
+                                      '${postInfo?.user?.brandName ?? ''}${postInfo?.user?.firstName ?? ''} ${postInfo?.user?.lastName ?? ''} ',
                                       style: const TextStyle(
                                         fontSize: 16,
                                         color: Color(0xFF2B2B30),

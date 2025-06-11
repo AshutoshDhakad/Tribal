@@ -13,6 +13,7 @@ abstract class Routes {
   static const SINGLE_FEED_PAGE = _Paths.SINGLE_FEED_PAGE;
   static const CREATE_PROFILE = _Paths.CREATE_PROFILE;
   static const BRANDPROFILE = _Paths.BRANDPROFILE;
+  static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
 }
 
 abstract class _Paths {
@@ -27,4 +28,5 @@ abstract class _Paths {
   static const SINGLE_FEED_PAGE = '/single-feed-page';
   static const CREATE_PROFILE = '/create-profile';
   static const BRANDPROFILE = '/brandprofile';
+  static const EDIT_PROFILE = '/edit-profile';
 }

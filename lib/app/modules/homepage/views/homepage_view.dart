@@ -4,12 +4,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tribal/app/modules/brandprofile/views/brandprofile_view.dart';
 import 'package:tribal/app/modules/createProfile/views/create_profile_view.dart';
+import 'package:tribal/app/modules/editProfile/views/edit_profile_view.dart';
 import 'package:tribal/app/modules/homepage/controllers/homepage_controller.dart';
-
 import 'package:tribal/app/modules/singleFeedPage/views/single_feed_page_view.dart';
-
 import '../../model/vertical.dart';
-import '../../singleFeedPage/controllers/single_feed_page_controller.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -63,17 +61,36 @@ class _HomepageState extends State<Homepage> {
             body: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(children: [
-                  const Padding(
-                    padding: EdgeInsets.only(right: 250),
-                    child: Text(
-                      'Feed',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Gilroy-Bold'),
+                  Padding(
+                    padding: EdgeInsets.only(right: 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Feed',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Gilroy-Bold',
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            // Your action here, for example:
+                            Get.to(() => EditProfileView(), arguments: '281');
+                          },
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
+
                   ),
+
+
                   Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15, top: 20),
                     child: TextField(

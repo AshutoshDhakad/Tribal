@@ -274,17 +274,15 @@ class CreateProfileView extends GetView<CreateProfileController> {
                              ),
 
 
+
                            const SizedBox(height: 20),
                            const SizedBox(height: 8),
                          ],
                        ),
 
-
                      ],
                    ),
                  ),
-
-
               ],
             ),
           );
