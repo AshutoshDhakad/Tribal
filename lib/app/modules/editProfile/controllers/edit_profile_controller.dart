@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -6,11 +7,11 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import '../../model/verticalapi.dart';
 
-
 class EditProfileController extends GetxController {
   Rx<File?> profileImage1 = Rx<File?>(null);
   Rx<File?> profileImage2 = Rx<File?>(null);
   Rx<File?> profileImage3 = Rx<File?>(null);
+
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final bioController = TextEditingController();
@@ -20,29 +21,27 @@ class EditProfileController extends GetxController {
   final tiktokController = TextEditingController();
   final twitterController = TextEditingController();
   final youtubeController = TextEditingController();
-  RxList<int> selectedVerticalIds = <int>[].obs;
-
 
   final isLoading = false.obs;
+  final isSelected = true.obs;
   final edt = Welcome().obs;
   final verticaldata1 = Verticalsdata().obs;
 
-  final String token = 'Bearer 1571|cI4Iz5YLmmvtNdbexIAiW2EMy32GjlZXSLFSKpRYd4bbc9d7';
+  RxList<Datum> allVerticals = <Datum>[].obs; // ✅ Correct type
+  RxList<int> selectedVerticalIds = <int>[].obs;
 
+  final String token = 'Bearer 1571|cI4Iz5YLmmvtNdbexIAiW2EMy32GjlZXSLFSKpRYd4bbc9d7';
 
   @override
   void onInit() {
     super.onInit();
-    fetchVerticals();
     final userId = Get.arguments as String?;
     if (userId != null) {
-      fetchPostById(userId);
+      fetchData(userId);
     } else {
       debugPrint("user_id is null in Get.arguments.");
     }
-
   }
-
 
   @override
   void onClose() {
@@ -72,58 +71,85 @@ class EditProfileController extends GetxController {
     genderController.text = editData.userInfo?.userProfile?.gender ?? "";
   }
 
-  Future<void> fetchPostById(String userId) async {
+  Future<void> fetchData(String userId) async {
     isLoading.value = true;
 
     try {
-      final response = await dio.Dio().get(
+      // 1. Get user profile
+      final userProfileResponse = await dio.Dio().get(
         'https://tribaldash.urlsdemo.net/api/view-user-profile',
-        options: dio.Options(
-            headers: {"Authorization": token}),
+        options: dio.Options(headers: {"Authorization": token}),
       );
 
-      if (response.statusCode == 200) {
-        edt.value = Welcome.fromJson(response.data);
+      // 2. Get all verticals
+      final verticalsResponse = await dio.Dio().post(
+        'https://tribaldash.urlsdemo.net/api/verticals',
+        options: dio.Options(headers: {"Authorization": token}),
+      );
+
+      if (userProfileResponse.statusCode == 200 &&
+          verticalsResponse.statusCode == 200) {
+
+        edt.value = Welcome.fromJson(userProfileResponse.data);
+        verticaldata1.value = Verticalsdata.fromJson(verticalsResponse.data);
         setInitialData(edt.value);
+
+        // ✅ Handle verticalIds string: "45,43"
+        final rawIds = edt.value.userInfo?.userProfile?.verticalIds;
+        List<int> selectedIds = [];
+
+        if (rawIds is String) {
+          selectedIds = rawIds
+              .split(',')
+              .map((e) => int.tryParse(e.trim()))
+              .whereType<int>()
+              .toList();
+        }
+
+        print("🟢 Parsed selected vertical IDs: $selectedIds");
+
+        final all = verticaldata1.value.data ?? [];
+
+        // ✅ Mark selected
+        for (var v in all) {
+          v.isSelected = selectedIds.contains(v.id);
+        }
+
+        // ✅ Update local reactive lists
+        selectedVerticalIds.assignAll(selectedIds);
+        allVerticals.assignAll(all);
       } else {
-        Get.snackbar("Error", "Failed to fetch profile: ${response.statusCode}");
+        Get.snackbar("Error", "Failed to fetch data");
       }
     } catch (e) {
       Get.snackbar("Exception", "Something went wrong: $e");
+      print("❌ Error: $e");
     } finally {
       isLoading.value = false;
     }
   }
 
+  void toggleVertical(int id) {
+    final index = allVerticals.indexWhere((v) => v.id == id);
+    if (index != -1) {
+      final vertical = allVerticals[index];
 
-  Future<void> fetchVerticals({List<int> preSelectedIds = const []}) async {
-    try {
-      final response = await dio.Dio().post(
-        'https://tribaldash.urlsdemo.net/api/verticals',
-        options: dio.Options(headers: {"Authorization": token}),
-      );
-
-      print("STATUS: ${response.statusCode}");
-      print("BODY: ${response.data}");
-
-      if (response.statusCode == 200) {
-        verticaldata1.value = Verticalsdata.fromJson(response.data);
-        print("Parsed verticals: ${verticaldata1.value.data?.length}");
-
-
-        selectedVerticalIds.assignAll(preSelectedIds);
-
-
-      } else {
-        Get.snackbar("Error", "Failed to fetch verticals: ${response.statusCode}");
+      if (!vertical.isSelected && selectedVerticalIds.length >= 3) {
+        Get.snackbar("Limit reached", "You can select up to 3 verticals.");
+        return;
       }
-    } catch (e) {
-      Get.snackbar("Error", "Exception while fetching verticals: $e");
-      print("Exception: $e");
+
+      vertical.isSelected = !vertical.isSelected;
+
+      if (vertical.isSelected) {
+        selectedVerticalIds.add(id);
+      } else {
+        selectedVerticalIds.remove(id);
+      }
+
+      allVerticals.refresh();
     }
   }
-
-
 
   Future<void> updateProfileApi() async {
     isLoading.value = true;
@@ -136,11 +162,10 @@ class EditProfileController extends GetxController {
         "instagram_username": instagramController.text,
         "dob": dobController.text,
         "gender": genderController.text,
-        "vertical_ids": selectedVerticalIds.toString(),
+        "vertical_ids": selectedVerticalIds.join(','),
         "tiktok_username": tiktokController.text,
         "twitter": twitterController.text,
         "youtube": youtubeController.text,
-
         if (profileImage1.value != null)
           "main_image": await dio.MultipartFile.fromFile(profileImage1.value!.path),
         if (profileImage2.value != null)
@@ -149,13 +174,11 @@ class EditProfileController extends GetxController {
           "third_image": await dio.MultipartFile.fromFile(profileImage3.value!.path),
       });
 
-      final response = await dio.Dio().post("https://tribaldash.urlsdemo.net/api/update-profile",
-
+      final response = await dio.Dio().post(
+        "https://tribaldash.urlsdemo.net/api/update-profile",
         data: formData,
-        options: dio.Options(
-            headers: {"Authorization": token}),
+        options: dio.Options(headers: {"Authorization": token}),
       );
-
       if (response.statusCode == 200) {
         Get.snackbar("Success", "Profile updated successfully!");
       } else {
@@ -168,5 +191,4 @@ class EditProfileController extends GetxController {
     }
   }
 }
-
 

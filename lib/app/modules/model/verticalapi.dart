@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final verticalsdata = verticalsdataFromJson(jsonString);
 
 import 'dart:convert';
 
@@ -33,20 +30,24 @@ class Verticalsdata {
 }
 
 class Datum {
+
   int? id;
   String? verticalName;
   String? image;
+  bool isSelected = false;
 
   Datum({
     this.id,
     this.verticalName,
     this.image,
+    this.isSelected = false,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],
     verticalName: json["vertical_name"],
     image: json["image"],
+    isSelected: false,
   );
 
   Map<String, dynamic> toJson() => {

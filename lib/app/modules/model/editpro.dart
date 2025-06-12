@@ -89,6 +89,7 @@ class UserInfo {
 }
 
 class UserProfile {
+  final String? verticalIds;
   int? id;
   int? userId;
   String? profileImage;
@@ -110,7 +111,6 @@ class UserProfile {
   int? maxSocialFollowers;
   DateTime? dob;
   String? gender;
-  String? verticalIds;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -166,6 +166,7 @@ class UserProfile {
     verticalIds: json["vertical_ids"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+
   );
 
   Map<String, dynamic> toJson() => {
@@ -197,20 +198,25 @@ class UserProfile {
 }
 
 class Vertical {
+
   int? id;
   String? verticalName;
   String? image;
+  bool isSelected;
 
   Vertical({
     this.id,
     this.verticalName,
     this.image,
+    this.isSelected = false,
   });
 
-  factory Vertical.fromJson(Map<String, dynamic> json) => Vertical(
+  factory Vertical.fromJson(Map<String, dynamic> json) =>
+      Vertical(
     id: json["id"],
     verticalName: json["vertical_name"],
     image: json["image"],
+        isSelected: false,
   );
 
   Map<String, dynamic> toJson() => {

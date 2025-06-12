@@ -718,7 +718,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black87)),
                           Obx(() {
-                            final verticals = controller.verticaldata1.value.data ?? [];
+                            final verticals = controller.allVerticals;
 
                             if (verticals.isEmpty) return const Text("No verticals found");
 
@@ -726,25 +726,17 @@ class EditProfileView extends GetView<EditProfileController> {
                               spacing: 8,
                               runSpacing: 8,
                               children: verticals.map((data) {
-                                final isSelected = controller.selectedVerticalIds.contains(data.id);
-
                                 return GestureDetector(
-                                  onTap: () {
-                                    if (isSelected) {
-                                      controller.selectedVerticalIds.remove(data.id);
-                                    } else if (controller.selectedVerticalIds.length < 3) {
-                                      controller.selectedVerticalIds.add(data.id!);
-                                    } else {
-                                      Get.snackbar("Limit Reached", "You can only select up to 3 verticals");
-                                    }
-                                  },
+                                  onTap: () => controller.toggleVertical(data.id!),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                     decoration: BoxDecoration(
-                                      color: isSelected ? Colors.white: Colors.white,
+                                      color: Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                        color: isSelected ? Color.fromRGBO(55, 177, 185, 1) : Colors.grey.shade400,
+                                        color: data.isSelected
+                                            ? const Color.fromRGBO(55, 177, 185, 1)
+                                            : Colors.grey.shade400,
                                         width: 1,
                                       ),
                                     ),
@@ -754,7 +746,12 @@ class EditProfileView extends GetView<EditProfileController> {
                                         if (data.image != null && data.image!.isNotEmpty)
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(8),
-                                            child: Image.network(data.image!, height: 20, width: 20, fit: BoxFit.cover),
+                                            child: Image.network(
+                                              data.image!,
+                                              height: 20,
+                                              width: 20,
+                                              fit: BoxFit.cover,
+                                            ),
                                           )
                                         else
                                           Image.asset('assets/assets/img.png', height: 20, width: 20),
@@ -763,10 +760,11 @@ class EditProfileView extends GetView<EditProfileController> {
                                           data.verticalName ?? '',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: isSelected ? Color.fromRGBO(55, 177, 185, 1) : Colors.black,
+                                            color: data.isSelected
+                                                ? const Color.fromRGBO(55, 177, 185, 1)
+                                                : Colors.black,
                                           ),
                                         ),
-
                                       ],
                                     ),
                                   ),
@@ -774,7 +772,6 @@ class EditProfileView extends GetView<EditProfileController> {
                               }).toList(),
                             );
                           }),
-
 
 
                           const SizedBox(height: 20),
@@ -787,7 +784,6 @@ class EditProfileView extends GetView<EditProfileController> {
                   child: TextButton(
                     onPressed: () async {
                       await controller.updateProfileApi();
-                      Get.offAllNamed('/Homepage');
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.black,
