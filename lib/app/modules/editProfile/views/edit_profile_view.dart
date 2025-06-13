@@ -5,8 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tribal/app/modules/homepage/views/homepage_view.dart';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
@@ -679,35 +678,41 @@ class EditProfileView extends GetView<EditProfileController> {
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87)),
                               const SizedBox(height: 8),
-                              DropdownButtonFormField<String>(
-                                value:
-                                    controller.genderController.text.isNotEmpty
-                                        ? _capitalize(
-                                            controller.genderController.text)
-                                        : null,
-                                items: ['Male', 'Female'].map((gender) {
-                                  return DropdownMenuItem<String>(
-                                    value: gender,
-                                    child: Text(gender),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  if (value != null)
-                                    controller.genderController.text = value;
-                                },
+
+
+
+                              DropdownButtonFormField2<String>(
                                 decoration: InputDecoration(
                                   filled: true,
-                                  fillColor:
-                                      const Color.fromRGBO(255, 255, 255, 1),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 14, horizontal: 14),
+                                  fillColor: const Color.fromRGBO(255, 255, 255, 1),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30),
                                     borderSide: BorderSide.none,
                                   ),
+                                  hintText: 'Gender',
                                 ),
                                 hint: const Text('Gender'),
-                              ),
+                                value: controller.genderController.text.isNotEmpty
+                                    ? _capitalize(controller.genderController.text)
+                                    : null,
+                                items: ['Male', 'Female'].map((gender) {
+                                  return DropdownMenuItem<String>(
+
+                                    value: gender,
+                                    child: Text(gender),
+
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    controller.genderController.text = value;
+                                  }
+                                },
+                                iconStyleData: const IconStyleData(
+                                  icon: Icon(Icons.arrow_drop_down),
+                                ),
+                              )
                             ],
                           ),
 

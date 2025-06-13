@@ -10,6 +10,10 @@ import '../modules/editProfile/bindings/edit_profile_binding.dart';
 import '../modules/editProfile/views/edit_profile_view.dart';
 import '../modules/explorePage/bindings/explore_page_binding.dart';
 import '../modules/explorePage/views/explore_page_view.dart';
+import '../modules/followers/bindings/followers_binding.dart';
+import '../modules/followers/views/followers_view.dart';
+import '../modules/following/bindings/following_binding.dart';
+import '../modules/following/views/following_view.dart';
 import '../modules/homePage1/bindings/home_page1_binding.dart';
 import '../modules/homePage1/views/home_page1_view.dart';
 import '../modules/homepage/bindings/homepage_binding.dart';
@@ -83,6 +87,16 @@ class AppPages {
       name: _Paths.EDIT_PROFILE,
       page: () => EditProfileView(),
       binding: EditProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.FOLLOWERS,
+      page: () => FollowersView(),
+      binding: FollowersBinding(),
+    ),
+    GetPage(
+      name: _Paths.FOLLOWING,
+      page: () =>  FollowingView(),
+      binding: FollowingBinding(),
     ),
   ];
 }

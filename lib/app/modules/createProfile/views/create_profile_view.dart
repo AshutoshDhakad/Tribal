@@ -16,6 +16,7 @@ class CreateProfileView extends GetView<CreateProfileController> {
       child: Scaffold(
         backgroundColor: Color.fromRGBO(239, 239, 239, 1),
         body: Obx(() {
+
           if (controller.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }

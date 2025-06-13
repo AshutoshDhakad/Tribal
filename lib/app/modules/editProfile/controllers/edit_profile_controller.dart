@@ -27,7 +27,7 @@ class EditProfileController extends GetxController {
   final edt = Welcome().obs;
   final verticaldata1 = Verticalsdata().obs;
 
-  RxList<Datum> allVerticals = <Datum>[].obs; // ✅ Correct type
+  RxList<Datum> allVerticals = <Datum>[].obs;
   RxList<int> selectedVerticalIds = <int>[].obs;
 
   final String token = 'Bearer 1571|cI4Iz5YLmmvtNdbexIAiW2EMy32GjlZXSLFSKpRYd4bbc9d7';
@@ -75,13 +75,11 @@ class EditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      // 1. Get user profile
       final userProfileResponse = await dio.Dio().get(
         'https://tribaldash.urlsdemo.net/api/view-user-profile',
         options: dio.Options(headers: {"Authorization": token}),
       );
 
-      // 2. Get all verticals
       final verticalsResponse = await dio.Dio().post(
         'https://tribaldash.urlsdemo.net/api/verticals',
         options: dio.Options(headers: {"Authorization": token}),
@@ -94,7 +92,6 @@ class EditProfileController extends GetxController {
         verticaldata1.value = Verticalsdata.fromJson(verticalsResponse.data);
         setInitialData(edt.value);
 
-        // ✅ Handle verticalIds string: "45,43"
         final rawIds = edt.value.userInfo?.userProfile?.verticalIds;
         List<int> selectedIds = [];
 
@@ -110,12 +107,11 @@ class EditProfileController extends GetxController {
 
         final all = verticaldata1.value.data ?? [];
 
-        // ✅ Mark selected
+
         for (var v in all) {
           v.isSelected = selectedIds.contains(v.id);
         }
 
-        // ✅ Update local reactive lists
         selectedVerticalIds.assignAll(selectedIds);
         allVerticals.assignAll(all);
       } else {

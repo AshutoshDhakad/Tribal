@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:tribal/app/modules/brandprofile/views/brandprofile_view.dart';
 import 'package:tribal/app/modules/createProfile/views/create_profile_view.dart';
 import 'package:tribal/app/modules/editProfile/views/edit_profile_view.dart';
+import 'package:tribal/app/modules/followers/views/followers_view.dart';
+import 'package:tribal/app/modules/following/views/following_view.dart';
 import 'package:tribal/app/modules/homepage/controllers/homepage_controller.dart';
 import 'package:tribal/app/modules/singleFeedPage/views/single_feed_page_view.dart';
 import '../../model/vertical.dart';
@@ -77,10 +79,29 @@ class _HomepageState extends State<Homepage> {
                         ),
                         InkWell(
                           onTap: () {
-                            // Your action here, for example:
+
+                            Get.to(() => FollowersView(),);
+                          },
+                          child: const Icon(
+                            Icons.more_vert,
+                            color: Colors.black,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+
+                            Get.to(() => FollowingView(),);
+                          },
+                          child: const Icon(
+                            Icons.favorite,
+                            color: Colors.black,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
                             Get.to(() => EditProfileView(), arguments: '281');
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.more_vert,
                             color: Colors.black,
                           ),
